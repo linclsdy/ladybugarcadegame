@@ -1,0 +1,50 @@
+body {
+    text-align: center;
+}
+
+h1 {
+    font-family: 'Open Sans', sans-serif;
+    font-weight: 300;
+    font-weight: bold;
+    color: #696969;
+}
+
+
+.score-panel {   
+    display: flex;
+    position: static;
+    justify-content: center;
+    width: 100%;
+    font-family: 'Open Sans', sans-serif;
+    color: #696969;
+}
+
+
+.score-panel .hearts {
+    float: middle;
+    color: #FF69B4;
+    display: inline-block;
+    margin: 0 5px 0 260px;
+}
+
+.score-panel .hearts li {
+    list-style: none;
+    display: inline-block;
+}
+
+.score-panel .levels {  
+    float: left; 
+    margin: 0 5px 0 50px;
+}
+
+.score-panel .scores {  
+    float: middle; 
+    margin: 0 5px 0 40px;
+}
+
+.score-panel .restart {
+    float: right;
+    cursor: pointer;
+    margin: 0 60px 0 20px;
+}
+

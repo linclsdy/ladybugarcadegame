@@ -17,6 +17,3 @@ This is a classic arcade game, player can control the movement of the character 
 * Number and frequency of bugs will be increased after each level.
 * Reduce a heart while hitting a bug. It will game over while three hearts are used.
 * Win game while reach Level 15.
-
-# ladybugarcadegame
-# ladybugarcadegame

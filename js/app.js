@@ -16,13 +16,15 @@ Enemy.prototype.update = function(dt) {
     }
 
     // Check for collision between player and enemies
-    if (player.x < this.x + 50 && player.x + 50 > this.x && player.y < this.y + 50 && 50 + player.y > this.y) {
+    if (player.x < this.x + 50 && 
+        player.x + 50 > this.x && 
+        player.y < this.y + 50 && 
+        player.y + 50 > this.y) {
         player.x = 300;
         player.y = 380;
-        hideHeart();
-        if (hearts == 0) {
-            console.log("Game Over");
-            gameover();
+        game.hideHeart();
+        if (game.hearts === 0) {
+            game.gameover();
         }
     }
 
@@ -60,16 +62,16 @@ Player.prototype.update = function() {
     if (this.y < 0) {
         this.x = 300;
         this.y = 380;
-        addScore();
-        addLevel();
+        game.addScore();
+        game.addLevel();
         enemyLocation = [60, 140, 220];
-        if (levels <= 8) {
-            posY = enemyLocation[getRandomInt(0, 2)];
+        if (game.levels <= 8) {
+            posY = enemyLocation[game.getRandomInt(0, 2)];
             enemy = new Enemy(0, posY, 100 + Math.floor(Math.random() * 300));
             allEnemies.push(enemy);
         }
-        if (levels == 15) {
-            finished();
+        if (game.levels === 15) {
+            game.finished();
         }     
     }
 };
@@ -109,106 +111,119 @@ var scores = 0;
 var levels = 0;
 var hearts = 3;
 
-//Add one level while the player reach to the top area of river
-function addLevel() {
-  levels++;
-  const levelsText = document.querySelector('.levels');
-  levelsText.innerText = levels;
-}
 
-//Reset level to 0
-function resetLevel() {
-  levels = 0;
-  const levelsText = document.querySelector('.levels');
-  levelsText.innerText = levels;
-}
+var Game = function(scores, levels, hearts) {
+  this.scores = scores;
+  this.levels = levels;
+  this.hearts = hearts;
+  
+  //Add one level while the player reach to the top area of river
+  this.addLevel = function () {
+    this.levels++;
+    const levelsText = document.querySelector('.levels');
+    levelsText.innerText = this.levels;
+  }
+  
+  //Reset level to 0
+  this.resetLevel = function() {
+    this.levels = 0;
+    const levelsText = document.querySelector('.levels');
+    levelsText.innerText = this.levels;
+  }
 
-//Add 100 score while the player reach to the top area of river
-function addScore() {
-  scores += 100;
-  const scoresText = document.querySelector('.scores');
-  scoresText.innerText = scores;
-}
+  //Add 100 score while the player reach to the top area of river
+  this.addScore = function() {
+    this.scores += 100;
+    const scoresText = document.querySelector('.scores');
+    scoresText.innerText = this.scores;
+  }
+  
+  //Reset score to 0
+  this.resetScore = function() {
+    this.scores = 0;
+    const scoresText = document.querySelector('.scores');
+    scoresText.innerText = this.scores;
+  }
 
-//Reset score to 0
-function resetScore() {
-  scores = 0;
-  const scoresText = document.querySelector('.scores');
-  scoresText.innerText = scores;
-}
-
-//If the player hit one enemy, one heart is reduced and turn to oulined heart 
-function hideHeart() {
-  const heartList = document.querySelectorAll('.hearts li');
-  hearts--;
-  for (heart of heartList) {
-    if (heart.firstElementChild.className == 'fa fa-heart') {
-        heart.firstElementChild.className = 'fa fa-heart-o';
-        break;
-    }
+  //If the player hit one enemy, one heart is reduced and turn to oulined heart 
+  this.hideHeart = function() {
+    const heartList = document.querySelectorAll('.hearts li');
+    this.hearts--;
+    for (heart of heartList) {
+      if (heart.firstElementChild.className == 'fa fa-heart') {
+          heart.firstElementChild.className = 'fa fa-heart-o';
+          break;
+      }
+  }
+  }
+   
+  //Display all three full hearts 
+  this.resetHeart = function() {
+    const heartList = document.querySelectorAll('.hearts li');
+    this.hearts = 3
+    for (heart of heartList) {
+      heart.firstElementChild.className = 'fa fa-heart';
   }
 }
-
-//Display all three full hearts 
-function resetHeart() {
-  const heartList = document.querySelectorAll('.hearts li');
-  hearts = 3
-  for (heart of heartList) {
-    heart.firstElementChild.className = 'fa fa-heart';
-  }
-}
-
-//Reset enemies and start from one enemy
-function resetEmemy() {
+    
+  //Reset enemies and start from one enemy
+  this.resetEmemy = function() {
     allEnemies = [];
     enemyPosition.forEach(function(posY) {
         enemy = new Enemy(0, posY, 100 + Math.floor(Math.random() * 300));
         allEnemies.push(enemy);
-    });
+   });
 }
 
-//Restart the game, all score, level reset, heart reset and player's position will be resetted as the beginning
-function restart() {
-    console.log("restart");
-  if(confirm("Are you sure to restart?")) {
-        resetScore();
-        resetLevel();
-        resetHeart();
-        resetEmemy();
+   //Restart the game, all score, level reset, heart reset and player's position will be resetted as the beginning
+   this.restart = function() {
+    if(confirm("Are you sure to restart?")) {
+        this.resetScore();
+        this.resetLevel();
+        this.resetHeart();
+        this.resetEmemy();
         player.x = 300;
         player.y = 380;
-  };
+    }
+}
+
+
+    //gameover and ask to restart the game
+    this.gameover = function() {
+      alert("Game Over! Please restart.");
+      this.resetScore();
+      this.resetLevel();
+      this.resetHeart();
+      this.resetEmemy();
+      player.x = 300;
+      player.y = 380;
+    }
+
+    //finish the game and say congratulation
+    this.finished = function() {
+      alert("Congratulation!!");
+      this.resetScore();
+      this.resetLevel();
+      this.resetHeart();
+      this.resetEmemy();
+      player.x = 300;
+      player.y = 380;
+    }
+
+    //random to display enemies
+    this.getRandomInt = function(min, max) {
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 
 }
 
-function gameover() {
-    alert("Game Over! Please restart.");
-    resetScore();
-    resetLevel();
-    resetHeart();
-    resetEmemy();
-    player.x = 300;
-    player.y = 380;
+
+var game = new Game(scores, levels, hearts);
 
 
-}
-
-function finished() {
-    alert("Congratulation!!");
-    resetScore();
-    resetLevel();
-    resetHeart();
-    resetEmemy();
-    player.x = 300;
-    player.y = 380;
-}
-
-function getRandomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-}
 
 enemyPosition.forEach(function(posY) {
-    enemy = new Enemy(0, posY, 100 + Math.floor(Math.random() * 300));
+    const enemy = new Enemy(0, posY, 100 + Math.floor(Math.random() * 300));
     allEnemies.push(enemy);
 });
 
